@@ -204,6 +204,32 @@ export default function Footer3(props: FooterProps = {}) {
 									)}
 								</div>
 							</div>
+							{/* Created by Birim Ajans */}
+							<div className="row">
+								<div className="d-flex justify-content-center align-items-center py-3">
+									<span className="text-white opacity-50 me-2">Created by</span>
+									<Link 
+										href="https://birimajans.com" 
+										target="_blank" 
+										rel="noopener noreferrer"
+										className="d-flex align-items-center text-decoration-none"
+									>
+										<img 
+											src="/assets/imgs/logo.png" 
+											alt="Birim Ajans" 
+											style={{ 
+												width: '24px', 
+												height: '24px', 
+												objectFit: 'contain',
+												marginRight: '8px'
+											}} 
+										/>
+										<span className="text-white opacity-75 hover-opacity-100" style={{ transition: 'opacity 0.3s ease' }}>
+											Birim Ajans
+										</span>
+									</Link>
+								</div>
+							</div>
 						</div>
 					</div>
 				</div>
@@ -253,6 +279,10 @@ export default function Footer3(props: FooterProps = {}) {
 				
 				.copyright-content * {
 					color: inherit !important;
+				}
+				
+				.hover-opacity-100:hover {
+					opacity: 1 !important;
 				}
 			`}</style>
 		</>

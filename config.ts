@@ -1,1 +1,1 @@
-export const server: string ="http://localhost:3040/v1";
+export const server: string ="https://tripreka-server-1b8603e24b7c.herokuapp.com/v1";
