@@ -18,7 +18,6 @@ export default function PageContact2() {
 
 	return (
 		<>
-
 			<Contact1 />
 		</>
 	)

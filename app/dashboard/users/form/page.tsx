@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import { useDispatch, useSelector } from 'react-redux'
 import { getAllContactForms, deleteContactForm } from '@/redux/actions/contactFormActions'
@@ -16,7 +17,8 @@ import {
   CalendarClock,
   Heading1,
   Trash2,
-  AlertCircle
+  AlertCircle,
+  Image as ImageIcon
 } from 'lucide-react'
 import {
   Card,
@@ -64,6 +66,7 @@ interface FormSubmission {
   phone?: string
   subject: string
   message: string
+  images?: string[]
   createdAt: string
 }
 
@@ -182,6 +185,7 @@ export default function ContactFormSubmissions() {
                     <TableHead>Email</TableHead>
                     <TableHead>Phone</TableHead>
                     <TableHead>Subject</TableHead>
+                    <TableHead>Images</TableHead>
                     <TableHead>Date</TableHead>
                     <TableHead className="text-right">Actions</TableHead>
                   </TableRow>
@@ -196,6 +200,16 @@ export default function ContactFormSubmissions() {
                         <div className="max-w-[200px] truncate" title={submission.subject}>
                           {submission.subject}
                         </div>
+                      </TableCell>
+                      <TableCell>
+                        {submission.images && submission.images.length > 0 ? (
+                          <Badge variant="secondary" className="flex items-center gap-1">
+                            <ImageIcon className="h-3 w-3" />
+                            {submission.images.length}
+                          </Badge>
+                        ) : (
+                          "—"
+                        )}
                       </TableCell>
                       <TableCell>{formatDate(submission.createdAt)}</TableCell>
                       <TableCell className="text-right">
@@ -291,6 +305,85 @@ export default function ContactFormSubmissions() {
                   </CardContent>
                 </Card>
               </div>
+
+              {/* Images Section */}
+              {selectedSubmission.images && selectedSubmission.images.length > 0 && (
+                <>
+                  <Separator />
+                  <div>
+                    <div className="flex items-center justify-between mb-3">
+                      <div className="flex items-center gap-2">
+                        <ImageIcon className="h-5 w-5 text-primary" />
+                        <h4 className="text-sm font-semibold">Attached Images ({selectedSubmission.images.length})</h4>
+                      </div>
+                      {process.env.NODE_ENV === 'development' && (
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={async () => {
+                            console.log('Testing', selectedSubmission.images.length, 'images...')
+                            for (const imageUrl of selectedSubmission.images) {
+                              try {
+                                const response = await fetch(`/api/test-image?url=${encodeURIComponent(imageUrl)}`)
+                                const result = await response.json()
+                                console.log('✅ Image accessible:', imageUrl.split('/').pop(), result)
+                              } catch (error) {
+                                console.error('❌ Image failed:', imageUrl.split('/').pop(), error)
+                              }
+                            }
+                            toast.success('Image test completed - check console')
+                          }}
+                        >
+                          Test Images
+                        </Button>
+                      )}
+                    </div>
+                    
+                    <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                      {selectedSubmission.images.map((imageUrl, index) => (
+                        <div key={index} className="relative group">
+                          <div 
+                            className="relative w-full h-32 rounded-lg border overflow-hidden cursor-pointer hover:opacity-80 transition-opacity bg-gray-100"
+                            onClick={() => window.open(imageUrl, '_blank')}
+                          >
+                            <img
+                              src={imageUrl}
+                              alt={`Attachment ${index + 1}`}
+                              className="w-full h-full object-cover relative z-10"
+                              onError={(e) => {
+                                console.error('Image load error for:', imageUrl)
+                                const target = e.target as HTMLImageElement
+                                target.style.display = 'none'
+                              }}
+                              onLoad={(e) => {
+                                console.log('Image loaded successfully:', imageUrl)
+                                const target = e.target as HTMLImageElement
+                                target.style.display = 'block'
+                                // Hide the placeholder when image loads
+                                const placeholder = target.parentElement?.querySelector('.image-placeholder') as HTMLElement
+                                if (placeholder) {
+                                  placeholder.style.display = 'none'
+                                }
+                              }}
+                              style={{ display: 'none' }}
+                            />
+                            {/* Placeholder - shown by default, hidden when image loads */}
+                            <div className="image-placeholder absolute inset-0 flex items-center justify-center bg-gray-200 z-0">
+                              <div className="text-center">
+                                <ImageIcon className="h-8 w-8 text-gray-400 mx-auto mb-2" />
+                                <p className="text-xs text-gray-500">Loading...</p>
+                              </div>
+                            </div>
+                          </div>
+                          <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all rounded-lg flex items-center justify-center pointer-events-none">
+                            <Eye className="h-6 w-6 text-white opacity-0 group-hover:opacity-100 transition-opacity" />
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </>
+              )}
             </div>
           )}
 

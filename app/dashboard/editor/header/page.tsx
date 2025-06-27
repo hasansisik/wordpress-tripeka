@@ -106,6 +106,8 @@ interface HeaderData {
   phoneQuestionText?: string;
   showDestinationsDropdown?: boolean;
   destinationsCategories?: string[];
+  showMoreDropdown?: boolean;
+  moreCategories?: string[];
 }
 
 // Topbar item tipleri ve iconları için sabit listeler
@@ -210,7 +212,9 @@ export default function HeaderEditor() {
       topBarTextColor: "#ffffff",
       mobileMenuButtonColor: "#3b71fe",
       showDestinationsDropdown: false,
-      destinationsCategories: []
+      destinationsCategories: [],
+      showMoreDropdown: false,
+      moreCategories: []
     });
 
   const [showAlert, setShowAlert] = useState(false);
@@ -357,7 +361,9 @@ export default function HeaderEditor() {
         topBarTextColor: "#ffffff",
         mobileMenuButtonColor: "#3b71fe",
         showDestinationsDropdown: false,
-        destinationsCategories: []
+        destinationsCategories: [],
+        showMoreDropdown: false,
+        moreCategories: []
       };
 
     // If we already have header data from Redux, use it
@@ -386,7 +392,9 @@ export default function HeaderEditor() {
         topBarTextColor: header.topBarTextColor || initialData.topBarTextColor,
         mobileMenuButtonColor: header.mobileMenuButtonColor || initialData.mobileMenuButtonColor,
         showDestinationsDropdown: header.showDestinationsDropdown !== undefined ? header.showDestinationsDropdown : initialData.showDestinationsDropdown,
-        destinationsCategories: header.destinationsCategories || initialData.destinationsCategories
+        destinationsCategories: header.destinationsCategories || initialData.destinationsCategories,
+        showMoreDropdown: header.showMoreDropdown !== undefined ? header.showMoreDropdown : initialData.showMoreDropdown,
+        moreCategories: header.moreCategories || initialData.moreCategories
       };
       setHeaderData(updatedData);
     } else {
@@ -881,7 +889,9 @@ export default function HeaderEditor() {
         phoneIconColor: data.phoneIconColor || headerData.phoneIconColor || "#ffffff",
         phoneQuestionText: data.phoneQuestionText !== undefined ? data.phoneQuestionText : (headerData.phoneQuestionText || "Have Any Questions?"),
         showDestinationsDropdown: data.showDestinationsDropdown !== undefined ? data.showDestinationsDropdown : headerData.showDestinationsDropdown,
-        destinationsCategories: data.destinationsCategories || headerData.destinationsCategories || []
+        destinationsCategories: data.destinationsCategories || headerData.destinationsCategories || [],
+        showMoreDropdown: data.showMoreDropdown !== undefined ? data.showMoreDropdown : headerData.showMoreDropdown,
+        moreCategories: data.moreCategories || headerData.moreCategories || []
       };
 
       // Use Redux to update header
@@ -977,7 +987,9 @@ export default function HeaderEditor() {
         phoneIconColor: headerData.phoneIconColor || "#ffffff",
         phoneQuestionText: headerData.phoneQuestionText || "Have Any Questions?",
         showDestinationsDropdown: headerData.showDestinationsDropdown || false,
-        destinationsCategories: headerData.destinationsCategories || []
+        destinationsCategories: headerData.destinationsCategories || [],
+        showMoreDropdown: headerData.showMoreDropdown || false,
+        moreCategories: headerData.moreCategories || []
       };
 
       // Dispatch ile Redux store'u güncelle
@@ -1599,6 +1611,84 @@ function HeaderEditorContent({
                       </div>
                       <p className="text-xs text-gray-500">
                         Selected categories will appear in the destinations dropdown.
+                      </p>
+                    </div>
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* More Dropdown Card */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-base">More Dropdown</CardTitle>
+                <CardDescription>
+                  Configure the More dropdown menu for the header
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <Label htmlFor="showMore" className="text-sm">
+                      Show More Dropdown
+                    </Label>
+                    <Switch
+                      id="showMore"
+                      checked={headerData.showMoreDropdown || false}
+                      onCheckedChange={(checked) => {
+                        const updatedData = {
+                          ...headerData,
+                          showMoreDropdown: checked,
+                        };
+                        setHeaderData(updatedData);
+                        saveChangesToAPI(updatedData);
+                      }}
+                    />
+                  </div>
+                  
+                  {headerData.showMoreDropdown && (
+                    <div className="space-y-3 pl-2 border-l-2 border-gray-100">
+                      <Label className="text-sm font-medium">
+                        Select Categories for More Dropdown
+                      </Label>
+                      <div className="space-y-2 max-h-40 overflow-y-auto border rounded p-2">
+                        {categories && categories.length > 0 ? categories.map((category: string, index: number) => (
+                          <div key={index} className="flex items-center space-x-2">
+                            <input
+                              type="checkbox"
+                              id={`more-category-${index}`}
+                              checked={(headerData.moreCategories || []).includes(category)}
+                              onChange={(e) => {
+                                const currentCategories = headerData.moreCategories || [];
+                                let updatedCategories;
+                                
+                                if (e.target.checked) {
+                                  updatedCategories = [...currentCategories, category];
+                                } else {
+                                  updatedCategories = currentCategories.filter(cat => cat !== category);
+                                }
+                                
+                                const updatedData = {
+                                  ...headerData,
+                                  moreCategories: updatedCategories,
+                                };
+                                setHeaderData(updatedData);
+                                saveChangesToAPI(updatedData);
+                              }}
+                              className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                            />
+                            <Label htmlFor={`more-category-${index}`} className="text-xs">
+                              {category}
+                            </Label>
+                          </div>
+                        )) : (
+                          <div className="text-xs text-gray-500 text-center py-2">
+                            Blog kategorileri yükleniyor...
+                          </div>
+                        )}
+                      </div>
+                      <p className="text-xs text-gray-500">
+                        Selected categories will appear in the More dropdown.
                       </p>
                     </div>
                   )}

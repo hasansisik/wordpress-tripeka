@@ -20,6 +20,7 @@ export default function Header2({ scroll, hideHeader, isMobileMenu, handleMobile
 	const { user } = useSelector((state: RootState) => state.user);
 
 	const [showDestinations, setShowDestinations] = useState(false);
+	const [showMore, setShowMore] = useState(false);
 	const [activeCategory, setActiveCategory] = useState('trending');
 
 	// Always fetch header data when component mounts
@@ -100,6 +101,76 @@ export default function Header2({ scroll, hideHeader, isMobileMenu, handleMobile
 									>
 										<div className="row">
 											{header?.destinationsCategories && header.destinationsCategories.length > 0 ? header.destinationsCategories.map((category: string, index: number) => (
+												<div key={index} className="col-12 mb-3">
+													<Link 
+														href={`/blog/kategori?category=${category}`}
+														className="text-decoration-none d-block p-3 rounded hover-bg-light"
+														style={{ 
+															transition: 'all 0.2s ease',
+															border: '1px solid transparent'
+														}}
+														onMouseEnter={(e) => {
+															e.currentTarget.style.backgroundColor = '#f8f9fa';
+															e.currentTarget.style.borderColor = '#e9ecef';
+															e.currentTarget.style.transform = 'translateY(-2px)';
+														}}
+														onMouseLeave={(e) => {
+															e.currentTarget.style.backgroundColor = 'transparent';
+															e.currentTarget.style.borderColor = 'transparent';
+															e.currentTarget.style.transform = 'translateY(0)';
+														}}
+													>
+														<h5 className="mb-0 text-dark fw-bold" style={{ fontSize: '12px' }}>
+															{category}
+														</h5>
+													</Link>
+												</div>
+											)) : (
+												<div className="col-12 mb-3">
+													<div className="text-center p-3 text-muted">
+														<small>Kategoriler seçilmemiş</small>
+													</div>
+												</div>
+											)}
+										</div>
+									</div>
+								</li>
+								)}
+								
+								{/* More Dropdown - Only show if enabled in header settings */}
+								{header?.showMoreDropdown && (
+									<li 
+										className="nav-item dropdown position-relative"
+										onMouseEnter={() => setShowMore(true)}
+										onMouseLeave={() => setShowMore(false)}
+									>
+										<span
+											className="nav-link fw-bold d-flex align-items-center"
+											style={{ cursor: 'pointer' }}
+										>
+											More
+										</span>
+									
+									{/* More Dropdown Menu */}
+									<div 
+										className={`dropdown-menu destinations-dropdown ${showMore ? 'show' : ''}`}
+										style={{
+											display: showMore ? 'block' : 'none',
+											position: 'absolute',
+											top: 'calc(100% + 0px)',
+											left: '50%',
+											transform: 'translateX(-50%)',
+											width: '400px',
+											padding: '25px',
+											border: 'none',
+											borderRadius: '12px',
+											boxShadow: '0 10px 40px rgba(0,0,0,0.1)',
+											backgroundColor: '#fff',
+											zIndex: 1000
+										}}
+									>
+										<div className="row">
+											{header?.moreCategories && header.moreCategories.length > 0 ? header.moreCategories.map((category: string, index: number) => (
 												<div key={index} className="col-12 mb-3">
 													<Link 
 														href={`/blog/kategori?category=${category}`}

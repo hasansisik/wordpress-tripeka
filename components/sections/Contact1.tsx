@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from "react-redux"
 import { getOther } from "@/redux/actions/otherActions"
 import { AppDispatch, RootState } from "@/redux/store"
 import { toast } from "sonner"
+import { uploadImageToCloudinary } from "@/utils/cloudinary"
 
 interface Contact1Props {
 	previewData?: any;
@@ -14,6 +15,7 @@ export default function Contact1({ previewData }: Contact1Props = {}) {
 	const [data, setData] = useState<any>(null)
 	const [isSubmitting, setIsSubmitting] = useState(false)
 	const [isSubmitted, setIsSubmitted] = useState(false)
+	const [isUploadingImages, setIsUploadingImages] = useState(false)
 	const [formData, setFormData] = useState({
 		name: '',
 		email: '',
@@ -21,7 +23,11 @@ export default function Contact1({ previewData }: Contact1Props = {}) {
 		subject: '',
 		message: ''
 	})
+	const [selectedImages, setSelectedImages] = useState<File[]>([])
+	const [uploadedImageUrls, setUploadedImageUrls] = useState<string[]>([])
+	const [previewUrls, setPreviewUrls] = useState<string[]>([])
 	const formRef = useRef<HTMLFormElement>(null)
+	const fileInputRef = useRef<HTMLInputElement>(null)
 	const dispatch = useDispatch<AppDispatch>()
 	const { other, loading } = useSelector((state: RootState) => state.other)
 
@@ -42,6 +48,72 @@ export default function Contact1({ previewData }: Contact1Props = {}) {
 			setData(other.contact1);
 		}
 	}, [previewData, other])
+
+	// Handle image selection
+	const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+		const files = Array.from(e.target.files || [])
+		const maxFiles = 5 // Maximum 5 images
+		
+		if (selectedImages.length + files.length > maxFiles) {
+			toast.error(`En fazla ${maxFiles} görsel yükleyebilirsiniz`)
+			return
+		}
+
+		// Validate file types and sizes
+		const validFiles = files.filter(file => {
+			const isValidType = file.type.startsWith('image/')
+			const isValidSize = file.size <= 5 * 1024 * 1024 // 5MB max
+			
+			if (!isValidType) {
+				toast.error(`${file.name} geçerli bir görsel dosyası değil`)
+				return false
+			}
+			if (!isValidSize) {
+				toast.error(`${file.name} dosyası çok büyük (max 5MB)`)
+				return false
+			}
+			return true
+		})
+
+		if (validFiles.length > 0) {
+			setSelectedImages(prev => [...prev, ...validFiles])
+			
+			// Create preview URLs
+			const newPreviewUrls = validFiles.map(file => URL.createObjectURL(file))
+			setPreviewUrls(prev => [...prev, ...newPreviewUrls])
+		}
+	}
+
+	// Remove selected image
+	const removeImage = (index: number) => {
+		setSelectedImages(prev => prev.filter((_, i) => i !== index))
+		setPreviewUrls(prev => {
+			// Revoke the URL to free memory
+			URL.revokeObjectURL(prev[index])
+			return prev.filter((_, i) => i !== index)
+		})
+		setUploadedImageUrls(prev => prev.filter((_, i) => i !== index))
+	}
+
+	// Upload images to Cloudinary
+	const uploadImages = async (): Promise<string[]> => {
+		if (selectedImages.length === 0) return []
+		
+		setIsUploadingImages(true)
+		const uploadPromises = selectedImages.map(file => uploadImageToCloudinary(file))
+		
+		try {
+			const urls = await Promise.all(uploadPromises)
+			setUploadedImageUrls(urls)
+			return urls
+		} catch (error) {
+			console.error('Error uploading images:', error)
+			toast.error('Görseller yüklenirken hata oluştu')
+			throw error
+		} finally {
+			setIsUploadingImages(false)
+		}
+	}
 
 	// Create dynamic styles for button colors
 	useEffect(() => {
@@ -88,6 +160,13 @@ export default function Contact1({ previewData }: Contact1Props = {}) {
 		};
 	}, [data]);
 
+	// Clean up preview URLs on unmount
+	useEffect(() => {
+		return () => {
+			previewUrls.forEach(url => URL.revokeObjectURL(url))
+		}
+	}, [])
+
 	if (!data || loading) {
 		return <section>Contact1 Loading...</section>
 	}
@@ -98,12 +177,26 @@ export default function Contact1({ previewData }: Contact1Props = {}) {
 		
 		try {
 			const formDataObj = new FormData(e.currentTarget);
+			let imageUrls: string[] = []
+			
+			// Upload images first if any are selected
+			if (selectedImages.length > 0) {
+				try {
+					imageUrls = await uploadImages()
+				} catch (error) {
+					// If image upload fails, don't submit the form
+					setIsSubmitting(false)
+					return
+				}
+			}
+			
 			const formValues = {
 				name: formDataObj.get('name') as string,
 				email: formDataObj.get('email') as string,
 				phone: formDataObj.get('phone') as string || '',
 				subject: formDataObj.get('subject') as string,
-				message: formDataObj.get('message') as string
+				message: formDataObj.get('message') as string,
+				images: imageUrls
 			};
 
 			console.log('Form values:', formValues);
@@ -143,6 +236,15 @@ export default function Contact1({ previewData }: Contact1Props = {}) {
 				subject: '',
 				message: ''
 			});
+			
+			// Reset image states
+			setSelectedImages([])
+			setUploadedImageUrls([])
+			previewUrls.forEach(url => URL.revokeObjectURL(url))
+			setPreviewUrls([])
+			if (fileInputRef.current) {
+				fileInputRef.current.value = ''
+			}
 			
 			setIsSubmitted(true);
 			
@@ -244,6 +346,58 @@ export default function Contact1({ previewData }: Contact1Props = {}) {
 				
 				.section-contact-3 form {
 					width: 100%;
+				}
+
+				/* Image upload styles */
+				.image-upload-area {
+					border: 2px dashed #ddd;
+					border-radius: 8px;
+					padding: 20px;
+					text-align: center;
+					cursor: pointer;
+					transition: border-color 0.3s ease;
+				}
+				
+				.image-upload-area:hover {
+					border-color: #6342EC;
+				}
+				
+				.image-preview-grid {
+					display: grid;
+					grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+					gap: 10px;
+					margin-top: 15px;
+				}
+				
+				.image-preview-item {
+					position: relative;
+					aspect-ratio: 1;
+					border-radius: 8px;
+					overflow: hidden;
+					border: 2px solid #ddd;
+				}
+				
+				.image-preview-item img {
+					width: 100%;
+					height: 100%;
+					object-fit: cover;
+				}
+				
+				.image-remove-btn {
+					position: absolute;
+					top: 5px;
+					right: 5px;
+					background: rgba(255, 0, 0, 0.8);
+					color: white;
+					border: none;
+					border-radius: 50%;
+					width: 24px;
+					height: 24px;
+					cursor: pointer;
+					display: flex;
+					align-items: center;
+					justify-content: center;
+					font-size: 14px;
 				}
 			`}</style>
 			<section className="section-contact-3 position-relative py-5 fix" style={sectionStyle}>
@@ -361,24 +515,69 @@ export default function Contact1({ previewData }: Contact1Props = {}) {
 													></textarea>
 												</div>
 											</div>
+											
+											{/* Image Upload Section */}
+											<div className="col-12 mt-4">
+												<div className="image-upload-area" onClick={() => fileInputRef.current?.click()}>
+													<input
+														ref={fileInputRef}
+														type="file"
+														multiple
+														accept="image/*"
+														onChange={handleImageSelect}
+														style={{ display: 'none' }}
+													/>
+													<svg xmlns="http://www.w3.org/2000/svg" width={24} height={24} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+														<rect width="18" height="18" x="3" y="3" rx="2" ry="2"/>
+														<circle cx="9" cy="9" r="2"/>
+														<path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/>
+													</svg>
+													<p className="mt-2 mb-0">Görsel Yükle (İsteğe bağlı)</p>
+													<p className="text-muted small mb-0">En fazla 5 görsel, her biri max 5MB</p>
+												</div>
+												
+												{/* Image Previews */}
+												{previewUrls.length > 0 && (
+													<div className="image-preview-grid">
+														{previewUrls.map((url, index) => (
+															<div key={index} className="image-preview-item">
+																<img src={url} alt={`Preview ${index + 1}`} />
+																<button
+																	type="button"
+																	className="image-remove-btn"
+																	onClick={() => removeImage(index)}
+																	title="Remove image"
+																>
+																	×
+																</button>
+															</div>
+														))}
+													</div>
+												)}
+											</div>
+											
 											<div className="col-12 text-center text-lg-start">
 												<button 
 													type="submit" 
 													className="btn text-white hover-up mt-4 d-flex align-items-center justify-content-center mx-auto mx-lg-0 contact1-submit-btn" 
 													style={{...buttonStyle, maxWidth: '200px'}}
-													disabled={isSubmitting || isSubmitted}
+													disabled={isSubmitting || isSubmitted || isUploadingImages}
 												>
 													<span>
-														{isSubmitting 
-															? (data.buttonSubmittingText || 'Sending...') 
-															: isSubmitted 
-																? (data.buttonSubmittedText || 'Sent') 
-																: (data.buttonText || 'Send Message')
+														{isUploadingImages 
+															? 'Görseller Yükleniyor...'
+															: isSubmitting 
+																? (data.buttonSubmittingText || 'Sending...') 
+																: isSubmitted 
+																	? (data.buttonSubmittedText || 'Sent') 
+																	: (data.buttonText || 'Send Message')
 														}
 													</span>
-													<svg className="ms-2" xmlns="http://www.w3.org/2000/svg" width={24} height={24} viewBox="0 0 24 24" fill="none">
-														<path className="stroke-white" d="M21.1059 12.2562H0.5V11.7443H21.1059H22.313L21.4594 10.8907L17.0558 6.48705L17.4177 6.12508L23.2929 12.0002L17.4177 17.8754L17.0558 17.5134L21.4594 13.1098L22.313 12.2562H21.1059Z" fill="black" stroke="white" />
-													</svg>
+													{!isUploadingImages && (
+														<svg className="ms-2" xmlns="http://www.w3.org/2000/svg" width={24} height={24} viewBox="0 0 24 24" fill="none">
+															<path className="stroke-white" d="M21.1059 12.2562H0.5V11.7443H21.1059H22.313L21.4594 10.8907L17.0558 6.48705L17.4177 6.12508L23.2929 12.0002L17.4177 17.8754L17.0558 17.5134L21.4594 13.1098L22.313 12.2562H21.1059Z" fill="black" stroke="white" />
+														</svg>
+													)}
 												</button>
 											</div>
 										</div>
