@@ -3,7 +3,6 @@ import MobileMenu from '../MobileMenu'
 import Search from '../Search'
 import OffCanvas from '../OffCanvas'
 import ThemeSwitch from '@/components/elements/ThemeSwitch'
-import Menu from '../Menu'
 import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from '@/redux/store'
@@ -12,8 +11,6 @@ import { getMyProfile } from '@/redux/actions/userActions'
 
 import { User } from 'lucide-react'
 
-
-
 export default function Header2({ scroll, hideHeader, isMobileMenu, handleMobileMenu, isSearch, handleSearch, isOffCanvas, handleOffCanvas }: any) {
 	const dispatch = useDispatch();
 	const { header, loading } = useSelector((state: RootState) => state.header);
@@ -21,6 +18,7 @@ export default function Header2({ scroll, hideHeader, isMobileMenu, handleMobile
 
 	const [showDestinations, setShowDestinations] = useState(false);
 	const [showMore, setShowMore] = useState(false);
+	const [showHotels, setShowHotels] = useState(false);
 	const [activeCategory, setActiveCategory] = useState('trending');
 
 	// Always fetch header data when component mounts
@@ -100,32 +98,162 @@ export default function Header2({ scroll, hideHeader, isMobileMenu, handleMobile
 										}}
 									>
 										<div className="row">
-											{header?.destinationsCategories && header.destinationsCategories.length > 0 ? header.destinationsCategories.map((category: string, index: number) => (
-												<div key={index} className="col-12 mb-3">
-													<Link 
-														href={`/blog/kategori?category=${category}`}
-														className="text-decoration-none d-block p-3 rounded hover-bg-light"
-														style={{ 
-															transition: 'all 0.2s ease',
-															border: '1px solid transparent'
-														}}
-														onMouseEnter={(e) => {
-															e.currentTarget.style.backgroundColor = '#f8f9fa';
-															e.currentTarget.style.borderColor = '#e9ecef';
-															e.currentTarget.style.transform = 'translateY(-2px)';
-														}}
-														onMouseLeave={(e) => {
-															e.currentTarget.style.backgroundColor = 'transparent';
-															e.currentTarget.style.borderColor = 'transparent';
-															e.currentTarget.style.transform = 'translateY(0)';
-														}}
-													>
-														<h5 className="mb-0 text-dark fw-bold" style={{ fontSize: '12px' }}>
-															{category}
-														</h5>
-													</Link>
+											{header?.destinationsCategories && header.destinationsCategories.length > 0 ? (
+												<>
+													{header.destinationsCategories.map((category: string, index: number) => (
+														<div key={index} className="col-12 mb-3">
+															<Link 
+																href={`/blog/kategori?category=${category}`}
+																className="text-decoration-none d-block p-3 rounded hover-bg-light"
+																style={{ 
+																	transition: 'all 0.2s ease',
+																	border: '1px solid transparent'
+																}}
+																onMouseEnter={(e) => {
+																	e.currentTarget.style.backgroundColor = '#f8f9fa';
+																	e.currentTarget.style.borderColor = '#e9ecef';
+																	e.currentTarget.style.transform = 'translateY(-2px)';
+																}}
+																onMouseLeave={(e) => {
+																	e.currentTarget.style.backgroundColor = 'transparent';
+																	e.currentTarget.style.borderColor = 'transparent';
+																	e.currentTarget.style.transform = 'translateY(0)';
+																}}
+															>
+																<h5 className="mb-0 text-dark fw-bold" style={{ fontSize: '12px' }}>
+																	{category}
+																</h5>
+															</Link>
+														</div>
+													))}
+													{/* View All Option */}
+													<div className="col-12 mb-3 mt-2 pt-2" style={{ borderTop: '1px solid #e9ecef' }}>
+														<Link 
+															href={`/blog/kategori?category=${header.destinationsCategories.join(',')}`}
+															className="text-decoration-none d-block p-3 rounded hover-bg-light text-center"
+															style={{ 
+																transition: 'all 0.2s ease',
+																border: '1px solid transparent',
+																fontWeight: 'bold'
+															}}
+															onMouseEnter={(e) => {
+																e.currentTarget.style.backgroundColor = '#f8f9fa';
+																e.currentTarget.style.borderColor = '#e9ecef';
+																e.currentTarget.style.transform = 'translateY(-2px)';
+															}}
+															onMouseLeave={(e) => {
+																e.currentTarget.style.backgroundColor = 'transparent';
+																e.currentTarget.style.borderColor = 'transparent';
+																e.currentTarget.style.transform = 'translateY(0)';
+															}}
+														>
+															<h5 className="mb-0 text-primary fw-bold" style={{ fontSize: '12px' }}>
+																View All Destinations
+															</h5>
+														</Link>
+													</div>
+												</>
+											) : (
+												<div className="col-12 mb-3">
+													<div className="text-center p-3 text-muted">
+														<small>Kategoriler seçilmemiş</small>
+													</div>
 												</div>
-											)) : (
+											)}
+										</div>
+									</div>
+								</li>
+								)}
+								
+								{/* Hotels Dropdown - Only show if enabled in header settings */}
+								{header?.showHotelsDropdown && (
+									<li 
+										className="nav-item dropdown position-relative"
+										onMouseEnter={() => setShowHotels(true)}
+										onMouseLeave={() => setShowHotels(false)}
+									>
+										<span
+											className="nav-link fw-bold d-flex align-items-center"
+											style={{ cursor: 'pointer' }}
+										>
+											Hotels
+										</span>
+									
+									{/* Hotels Dropdown Menu */}
+									<div 
+										className={`dropdown-menu destinations-dropdown ${showHotels ? 'show' : ''}`}
+										style={{
+											display: showHotels ? 'block' : 'none',
+											position: 'absolute',
+											top: 'calc(100% + 0px)',
+											left: '50%',
+											transform: 'translateX(-50%)',
+											width: '400px',
+											padding: '25px',
+											border: 'none',
+											borderRadius: '12px',
+											boxShadow: '0 10px 40px rgba(0,0,0,0.1)',
+											backgroundColor: '#fff',
+											zIndex: 1000
+										}}
+									>
+										<div className="row">
+											{header?.hotelsCategories && header.hotelsCategories.length > 0 ? (
+												<>
+													{header.hotelsCategories.map((category: string, index: number) => (
+														<div key={index} className="col-12 mb-3">
+															<Link 
+																href={`/blog/kategori?category=${category}`}
+																className="text-decoration-none d-block p-3 rounded hover-bg-light"
+																style={{ 
+																	transition: 'all 0.2s ease',
+																	border: '1px solid transparent'
+																}}
+																onMouseEnter={(e) => {
+																	e.currentTarget.style.backgroundColor = '#f8f9fa';
+																	e.currentTarget.style.borderColor = '#e9ecef';
+																	e.currentTarget.style.transform = 'translateY(-2px)';
+																}}
+																onMouseLeave={(e) => {
+																	e.currentTarget.style.backgroundColor = 'transparent';
+																	e.currentTarget.style.borderColor = 'transparent';
+																	e.currentTarget.style.transform = 'translateY(0)';
+																}}
+															>
+																<h5 className="mb-0 text-dark fw-bold" style={{ fontSize: '12px' }}>
+																	{category}
+																</h5>
+															</Link>
+														</div>
+													))}
+													{/* View All Option */}
+													<div className="col-12 mb-3 mt-2 pt-2" style={{ borderTop: '1px solid #e9ecef' }}>
+														<Link 
+															href={`/blog/kategori?category=${header.hotelsCategories.join(',')}`}
+															className="text-decoration-none d-block p-3 rounded hover-bg-light text-center"
+															style={{ 
+																transition: 'all 0.2s ease',
+																border: '1px solid transparent',
+																fontWeight: 'bold'
+															}}
+															onMouseEnter={(e) => {
+																e.currentTarget.style.backgroundColor = '#f8f9fa';
+																e.currentTarget.style.borderColor = '#e9ecef';
+																e.currentTarget.style.transform = 'translateY(-2px)';
+															}}
+															onMouseLeave={(e) => {
+																e.currentTarget.style.backgroundColor = 'transparent';
+																e.currentTarget.style.borderColor = 'transparent';
+																e.currentTarget.style.transform = 'translateY(0)';
+															}}
+														>
+															<h5 className="mb-0 text-primary fw-bold" style={{ fontSize: '12px' }}>
+																View All Hotels
+															</h5>
+														</Link>
+													</div>
+												</>
+											) : (
 												<div className="col-12 mb-3">
 													<div className="text-center p-3 text-muted">
 														<small>Kategoriler seçilmemiş</small>
@@ -170,32 +298,62 @@ export default function Header2({ scroll, hideHeader, isMobileMenu, handleMobile
 										}}
 									>
 										<div className="row">
-											{header?.moreCategories && header.moreCategories.length > 0 ? header.moreCategories.map((category: string, index: number) => (
-												<div key={index} className="col-12 mb-3">
-													<Link 
-														href={`/blog/kategori?category=${category}`}
-														className="text-decoration-none d-block p-3 rounded hover-bg-light"
-														style={{ 
-															transition: 'all 0.2s ease',
-															border: '1px solid transparent'
-														}}
-														onMouseEnter={(e) => {
-															e.currentTarget.style.backgroundColor = '#f8f9fa';
-															e.currentTarget.style.borderColor = '#e9ecef';
-															e.currentTarget.style.transform = 'translateY(-2px)';
-														}}
-														onMouseLeave={(e) => {
-															e.currentTarget.style.backgroundColor = 'transparent';
-															e.currentTarget.style.borderColor = 'transparent';
-															e.currentTarget.style.transform = 'translateY(0)';
-														}}
-													>
-														<h5 className="mb-0 text-dark fw-bold" style={{ fontSize: '12px' }}>
-															{category}
-														</h5>
-													</Link>
-												</div>
-											)) : (
+											{header?.moreCategories && header.moreCategories.length > 0 ? (
+												<>
+													{header.moreCategories.map((category: string, index: number) => (
+														<div key={index} className="col-12 mb-3">
+															<Link 
+																href={`/blog/kategori?category=${category}`}
+																className="text-decoration-none d-block p-3 rounded hover-bg-light"
+																style={{ 
+																	transition: 'all 0.2s ease',
+																	border: '1px solid transparent'
+																}}
+																onMouseEnter={(e) => {
+																	e.currentTarget.style.backgroundColor = '#f8f9fa';
+																	e.currentTarget.style.borderColor = '#e9ecef';
+																	e.currentTarget.style.transform = 'translateY(-2px)';
+																}}
+																onMouseLeave={(e) => {
+																	e.currentTarget.style.backgroundColor = 'transparent';
+																	e.currentTarget.style.borderColor = 'transparent';
+																	e.currentTarget.style.transform = 'translateY(0)';
+																}}
+															>
+																<h5 className="mb-0 text-dark fw-bold" style={{ fontSize: '12px' }}>
+																	{category}
+																</h5>
+															</Link>
+														</div>
+													))}
+													{/* View All Option */}
+													<div className="col-12 mb-3 mt-2 pt-2" style={{ borderTop: '1px solid #e9ecef' }}>
+														<Link 
+															href={`/blog/kategori?category=${header.moreCategories.join(',')}`}
+															className="text-decoration-none d-block p-3 rounded hover-bg-light text-center"
+															style={{ 
+																transition: 'all 0.2s ease',
+																border: '1px solid transparent',
+																fontWeight: 'bold'
+															}}
+															onMouseEnter={(e) => {
+																e.currentTarget.style.backgroundColor = '#f8f9fa';
+																e.currentTarget.style.borderColor = '#e9ecef';
+																e.currentTarget.style.transform = 'translateY(-2px)';
+															}}
+															onMouseLeave={(e) => {
+																e.currentTarget.style.backgroundColor = 'transparent';
+																e.currentTarget.style.borderColor = 'transparent';
+																e.currentTarget.style.transform = 'translateY(0)';
+															}}
+														>
+															<h5 className="mb-0 text-primary fw-bold" style={{ fontSize: '12px' }}>
+																View All More
+															</h5>
+														</Link>
+													</div>
+												</>
+											) : (
 												<div className="col-12 mb-3">
 													<div className="text-center p-3 text-muted">
 														<small>Kategoriler seçilmemiş</small>

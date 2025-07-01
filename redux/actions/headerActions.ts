@@ -48,6 +48,10 @@ export interface HeaderPayload {
   secondButtonBorderColor?: string;
   showDestinationsDropdown?: boolean;
   destinationsCategories?: string[];
+  showMoreDropdown?: boolean;
+  moreCategories?: string[];
+  showHotelsDropdown?: boolean;
+  hotelsCategories?: string[];
 }
 
 // Get header data

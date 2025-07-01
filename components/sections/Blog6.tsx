@@ -58,7 +58,8 @@ export default function Blog6({ previewData, selectedCategory }: Blog6Props) {
   useEffect(() => {
     // Fetch blogs with category filter if provided
     if (selectedCategory) {
-      dispatch(getAllBlogs({ category: selectedCategory }));
+      // Handle multiple categories - fetch all blogs and filter client-side for multiple categories
+      dispatch(getAllBlogs());
     } else {
       dispatch(getAllBlogs());
     }
@@ -80,21 +81,24 @@ export default function Blog6({ previewData, selectedCategory }: Blog6Props) {
     }
   }, [previewData, other]);
 
-  // Filter blogs based on selected category
+  // Filter blogs based on selected category (supports multiple categories)
   useEffect(() => {
     if (!blogs || blogs.length === 0) return;
 
     // If selected category is provided, blogs should already be filtered from the API
     // But we keep this for client-side filtering fallback
     if (selectedCategory) {
+      // Handle multiple categories separated by comma
+      const selectedCategories = selectedCategory.split(',').map(cat => cat.trim().toLowerCase());
+      
       const filtered = blogs.filter((blog) => {
         if (Array.isArray(blog.category)) {
           return blog.category.some(
             (cat: string) =>
-              cat.toLowerCase() === selectedCategory.toLowerCase()
+              selectedCategories.includes(cat.toLowerCase())
           );
         } else if (typeof blog.category === "string") {
-          return blog.category.toLowerCase() === selectedCategory.toLowerCase();
+          return selectedCategories.includes(blog.category.toLowerCase());
         }
         return false;
       });
@@ -190,7 +194,9 @@ export default function Blog6({ previewData, selectedCategory }: Blog6Props) {
                 style={titleStyle}
               >
                 {selectedCategory
-                  ? `Kategori: ${selectedCategory}`
+                  ? selectedCategory.includes(',') 
+                    ? `Kategoriler: ${selectedCategory.split(',').join(', ')}`
+                    : `Kategori: ${selectedCategory}`
                   : "Tüm Blog Yazıları"}
               </h4>
               <span
