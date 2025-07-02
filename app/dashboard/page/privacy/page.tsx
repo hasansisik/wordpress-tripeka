@@ -124,7 +124,7 @@ export default function PrivacyPolicyPage() {
   };
 
   if (isLoading || loading) {
-    return <div className="flex items-center justify-center h-screen">Yükleniyor...</div>;
+    return <div className="flex items-center justify-center h-screen">Loading...</div>;
   }
 
   return (

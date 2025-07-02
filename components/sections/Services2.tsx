@@ -33,7 +33,7 @@ export default function Services2({ previewData }: Services2Props = {}) {
 	}, [previewData, other])
 
 	if (!data || loading) {
-		return <section>Yükleniyor...rvices2...</section>
+		return <section>Loading...rvices2...</section>
 	}
 
 	// Create styles for customizable elements

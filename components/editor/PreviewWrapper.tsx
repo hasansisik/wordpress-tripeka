@@ -168,7 +168,7 @@ export default function PreviewWrapper({
   }, [searchParams, dataParamName, typeParamName]);
 
   if (!contentData || !isLoaded) {
-    return <div className="w-full h-full flex items-center justify-center text-lg">Yükleniyor...eview...</div>;
+    return <div className="w-full h-full flex items-center justify-center text-lg">Loading...eview...</div>;
   }
 
   return (

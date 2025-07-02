@@ -37,7 +37,7 @@ export default function ProfileLayout({
     return (
       <div className="container d-flex justify-content-center align-items-center" style={{ minHeight: "100vh" }}>
         <div className="spinner-border text-primary" role="status">
-          <span className="visually-hidden">Yükleniyor...</span>
+          <span className="visually-hidden">Loading...</span>
         </div>
       </div>
     );

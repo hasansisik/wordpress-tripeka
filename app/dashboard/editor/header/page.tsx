@@ -1617,7 +1617,7 @@ function HeaderEditorContent({
                           </div>
                         )) : (
                           <div className="text-xs text-gray-500 text-center py-2">
-                            Blog kategorileri yükleniyor...
+                            Blog kategorileri Loading...
                           </div>
                         )}
                       </div>
@@ -1695,7 +1695,7 @@ function HeaderEditorContent({
                           </div>
                         )) : (
                           <div className="text-xs text-gray-500 text-center py-2">
-                            Blog kategorileri yükleniyor...
+                            Blog kategorileri Loading...
                           </div>
                         )}
                       </div>
@@ -1773,7 +1773,7 @@ function HeaderEditorContent({
                           </div>
                         )) : (
                           <div className="text-xs text-gray-500 text-center py-2">
-                            Blog kategorileri yükleniyor...
+                            Blog kategorileri Loading...
                           </div>
                         )}
                       </div>

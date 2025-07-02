@@ -250,7 +250,7 @@ export default function HeaderPreview() {
   }, [searchParams, isLoaded]);
 
   if (!headerData || !isLoaded) {
-    return <div className="w-full h-full flex items-center justify-center text-lg">Yükleniyor...ader preview...</div>;
+    return <div className="w-full h-full flex items-center justify-center text-lg">Loading...ader preview...</div>;
   }
 
   // Render the appropriate header component

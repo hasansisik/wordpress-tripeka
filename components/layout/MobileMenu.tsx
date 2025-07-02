@@ -104,7 +104,7 @@ export default function MobileMenu({ isMobileMenu, handleMobileMenu, menuItems =
 									objectFit: 'contain' 
 								}} 
 							/>
-							<span className="fw-bold">{header?.logo?.text || ""}</span>
+							<span className="fw-bold ms-2">{header?.logo?.text || ""}</span>
 						</Link>
 						<div 
 							className={`burger-icon burger-icon-white border rounded-3 ${isMobileMenu ? 'burger-close' : ''}`} 

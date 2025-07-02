@@ -45,7 +45,7 @@ export default function Team1({ previewData }: { previewData?: any }) {
   };
 
   if (loading) {
-    return <div className="py-5 text-center">Yükleniyor...am information...</div>;
+    return <div className="py-5 text-center">Loading...am information...</div>;
   }
 
   // Get team1 data with fallback to default values if not provided

@@ -2,6 +2,7 @@ import { Suspense } from "react";
 import { server } from "@/config";
 import Hero1 from "@/components/sections/Hero1";
 import Hero2 from "@/components/sections/Hero2";
+import Hero6 from "@/components/sections/Hero6";
 import Cta4 from "@/components/sections/Cta4";
 import Faqs1 from "@/components/sections/Faqs1";
 import Faqs2 from "@/components/sections/Faqs2";
@@ -58,6 +59,7 @@ const sectionComponents = {
   Hero1,
   Hero2,
   Hero3,
+  Hero6,
   Cta1,
   Cta4,
   Cta3,

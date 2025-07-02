@@ -261,7 +261,7 @@ export default function CtaPreview() {
   }, [searchParams, isLoaded]);
 
   if (!ctaData || !isLoaded) {
-    return <div className="w-full h-full flex items-center justify-center text-lg">Yükleniyor...A preview...</div>;
+    return <div className="w-full h-full flex items-center justify-center text-lg">Loading...A preview...</div>;
   }
 
   // Render the appropriate CTA component

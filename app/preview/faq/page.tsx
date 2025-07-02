@@ -232,7 +232,7 @@ export default function FaqPreview() {
   }, [searchParams, isLoaded]);
 
   if (!faqData || !isLoaded) {
-    return <div className="w-full h-full flex items-center justify-center text-lg">Yükleniyor...Q preview...</div>;
+    return <div className="w-full h-full flex items-center justify-center text-lg">Loading...Q preview...</div>;
   }
 
   return (

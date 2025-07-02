@@ -22,6 +22,7 @@ import {
 import { Layout, Type, Settings, Image } from "lucide-react";
 import Hero1 from "@/components/sections/Hero1";
 import Hero3 from "@/components/sections/Hero3";
+import Hero6 from "@/components/sections/Hero6";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import { getHero, updateHero } from "@/redux/actions/heroActions";
@@ -32,6 +33,7 @@ const heroTypes = [
   { value: "hero1", label: "Hero 1" },
   { value: "hero2", label: "Hero 2" },
   { value: "hero3", label: "Hero 3" },
+  { value: "hero6", label: "Hero 6" },
 ];
 
 // Fallback preview component that renders directly in the editor
@@ -69,6 +71,10 @@ const DirectPreview = ({ data }: { data: any }) => {
     <div className="preview-container editor-preview">
       {activeComponent === "hero1" ? (
         <Hero1 previewData={data} />
+      ) : activeComponent === "hero3" ? (
+        <Hero3 previewData={data} />
+      ) : activeComponent === "hero6" ? (
+        <Hero6 previewData={data} />
       ) : (
         <Hero3 previewData={data} />
       )}
@@ -192,6 +198,8 @@ export default function HeroEditor() {
             <Hero1ContentForm data={data.hero1 || {}} />
           ) : activeHero === "hero2" ? (
             <Hero2ContentForm data={data.hero2 || {}} />
+          ) : activeHero === "hero6" ? (
+            <Hero6ContentForm data={data.hero6 || {}} />
           ) : (
             <Hero3ContentForm data={data.hero3 || {}} />
           )}
@@ -210,6 +218,8 @@ export default function HeroEditor() {
             <Hero1MediaForm data={data.hero1 || {}} />
           ) : activeHero === "hero2" ? (
             <Hero2MediaForm data={data.hero2 || {}} />
+          ) : activeHero === "hero6" ? (
+            <Hero6MediaForm data={data.hero6 || {}} />
           ) : (
             <Hero3MediaForm data={data.hero3 || {}} />
           )}
@@ -220,7 +230,7 @@ export default function HeroEditor() {
 
   // If still loading, return empty div
   if (isLoading || loading) {
-    return <div>Yükleniyor...</div>;
+    return <div>Loading...</div>;
   }
 
   return (
@@ -1098,6 +1108,106 @@ function Hero2MediaForm({ data }: { data: any }) {
           </div>
         ))}
       </FormGroup>
+    </div>
+  );
+}
+
+// Hero 6 Content Form
+function Hero6ContentForm({ data }: { data: any }) {
+  return (
+    <div className="space-y-4">
+      <TextField
+        label="Badge Text"
+        value={data?.badge || ""}
+        path="hero6.badge"
+        placeholder="e.g. 🚀 Welcome to Infinia"
+      />
+
+      <TextField
+        label="Title"
+        value={data?.title || ""}
+        path="hero6.title"
+        placeholder="Enter hero title"
+      />
+
+      <TextAreaField
+        label="Description"
+        value={data?.description || ""}
+        path="hero6.description"
+        placeholder="Enter hero description"
+      />
+
+      <FormGroup title="Primary Button">
+        <TextField
+          label="Button Text"
+          value={data?.primaryButtonText || ""}
+          path="hero6.primaryButtonText"
+          placeholder="e.g. View Our Services"
+        />
+        <LinkField
+          label="Button Link"
+          value={data?.primaryButtonLink || ""}
+          path="hero6.primaryButtonLink"
+        />
+      </FormGroup>
+
+      <FormGroup title="Colors">
+        <ColorField
+          label="Badge Background Color"
+          value={data?.badgeBackgroundColor || "rgba(255, 255, 255, 0.5)"}
+          path="hero6.badgeBackgroundColor"
+        />
+        <ColorField
+          label="Badge Text Color"
+          value={data?.badgeTextColor || "#6342EC"}
+          path="hero6.badgeTextColor"
+        />
+        <ColorField
+          label="Badge Border Color"
+          value={data?.badgeBorderColor || "rgba(99, 66, 236, 0.3)"}
+          path="hero6.badgeBorderColor"
+        />
+        <ColorField
+          label="Title Color"
+          value={data?.titleColor || "#111827"}
+          path="hero6.titleColor"
+        />
+        <ColorField
+          label="Description Color"
+          value={data?.descriptionColor || "#4B5563"}
+          path="hero6.descriptionColor"
+        />
+        <ColorField
+          label="Primary Button Background"
+          value={data?.primaryButtonBackgroundColor || "linear-gradient(90deg, #6342EC 0%, #4731D8 100%)"}
+          path="hero6.primaryButtonBackgroundColor"
+        />
+        <ColorField
+          label="Primary Button Text Color"
+          value={data?.primaryButtonTextColor || "#FFFFFF"}
+          path="hero6.primaryButtonTextColor"
+        />
+      </FormGroup>
+    </div>
+  );
+}
+
+// Hero 6 Media Form
+function Hero6MediaForm({ data }: { data: any }) {
+  return (
+    <div className="space-y-4">
+      <TextField
+        label="Video Source"
+        value={data?.videoSrc || ""}
+        path="hero6.videoSrc"
+        placeholder="e.g. /assets/video.mp4"
+      />
+
+      <ImageUploadField
+        label="Line Image"
+        value={data?.lineImage || ""}
+        path="hero6.lineImage"
+      />
     </div>
   );
 }

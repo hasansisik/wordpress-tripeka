@@ -1105,7 +1105,7 @@ export default function OtherPreview() {
 
   // Render the appropriate component
   const renderOtherComponent = () => {
-    if (!otherData) return <div>Yükleniyor...</div>;
+    if (!otherData) return <div>Loading...</div>;
 
     const activeComponent = otherData.activeOther || "blog1";
 
@@ -1161,7 +1161,7 @@ export default function OtherPreview() {
           `,
         }}
       />
-      {isLoading ? <div>Yükleniyor...</div> : renderOtherComponent()}
+      {isLoading ? <div>Loading...</div> : renderOtherComponent()}
     </>
   );
 } 

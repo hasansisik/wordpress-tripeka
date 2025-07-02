@@ -473,7 +473,7 @@ export default function FooterPreview() {
   }
 
   if (!footerData || !isLoaded) {
-    return <div className="w-full h-full flex items-center justify-center text-lg">Yükleniyor...oter preview...</div>;
+    return <div className="w-full h-full flex items-center justify-center text-lg">Loading...oter preview...</div>;
   }
 
   // Ensure columns and links data is properly structured

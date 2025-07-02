@@ -120,6 +120,13 @@ const availableSections = [
     icon: Home,
   },
   {
+    id: "hero6",
+    name: "Hero 6",
+    type: "Hero6",
+    description: "Hero with background video",
+    icon: Film,
+  },
+  {
     id: "cta1",
     name: "CTA 1",
     type: "Cta1",
@@ -1164,7 +1171,7 @@ ${sectionsJSX}
                   )}
                   {categoryLoading && (
                     <p className="text-xs text-muted-foreground mt-1">
-                      Kategoriler yükleniyor...
+                      Kategoriler Loading...
                     </p>
                   )}
                   <p className="text-xs text-muted-foreground mt-1">
@@ -1204,7 +1211,7 @@ ${sectionsJSX}
                   )}
                   {authorLoading && (
                     <p className="text-xs text-muted-foreground mt-1">
-                      Yazarlar yükleniyor...
+                      Yazarlar Loading...
                     </p>
                   )}
                   <p className="text-xs text-muted-foreground mt-1">

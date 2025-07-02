@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import Hero1 from "@/components/sections/Hero1";
 import Hero2 from "@/components/sections/Hero2";
 import Hero3 from "@/components/sections/Hero3";
+import Hero6 from "@/components/sections/Hero6";
 import Script from "next/script";
 
 // Import all the necessary CSS directly in this component
@@ -251,7 +252,7 @@ export default function HeroPreview() {
   }, [searchParams, isLoaded]);
 
   if (!heroData || !isLoaded) {
-    return <div className="w-full h-full flex items-center justify-center text-lg">Yükleniyor...ro preview...</div>;
+    return <div className="w-full h-full flex items-center justify-center text-lg">Loading...ro preview...</div>;
   }
 
   // Render the appropriate hero component
@@ -266,6 +267,8 @@ export default function HeroPreview() {
         return <Hero2 previewData={heroData} />;
       case "hero3":
         return <Hero3 previewData={heroData} />;
+      case "hero6":
+        return <Hero6 previewData={heroData} />;
       default:
         return <Hero1 previewData={heroData} />;
     }

@@ -32,7 +32,7 @@ export default function HeroSection({ previewData }: HeroSectionProps) {
   }, [hero, previewData]);
 
   if (loading || !data) {
-    return <div className="py-5 text-center">Yükleniyor...ro section...</div>;
+    return <div className="py-5 text-center">Loading...ro section...</div>;
   }
 
   // Render the selected hero component

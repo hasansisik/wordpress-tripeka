@@ -316,7 +316,7 @@ export default function OtherEditor() {
 
   // If still loading, return empty div
   if (isLoading || loading) {
-    return <div>Yükleniyor...</div>;
+    return <div>Loading...</div>;
   }
 
   return (

@@ -55,7 +55,7 @@ export default function Footer3(props: FooterProps = {}) {
 	}, [props, footer])
 
 	if (!data) {
-		return <footer className="loading">Yükleniyor...oter...</footer>
+		return <footer className="loading">Loading...oter...</footer>
 	}
 
 	// Ensure data has all required properties with fallbacks

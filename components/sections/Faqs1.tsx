@@ -50,7 +50,7 @@ export default function Faqs1({ previewData }: Faqs1Props = {}) {
 			<section className="py-5">
 				<div className="container text-center">
 					<div className="spinner-border" role="status">
-						<span className="visually-hidden">Yükleniyor...</span>
+						<span className="visually-hidden">Loading...</span>
 					</div>
 				</div>
 			</section>

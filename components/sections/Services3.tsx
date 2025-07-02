@@ -41,7 +41,7 @@ export default function Services3({ previewData }: { previewData?: any }) {
 	}, [previewData]);
 
 	if (loading) {
-		return <div className="py-5 text-center">Yükleniyor...rvices information...</div>;
+		return <div className="py-5 text-center">Loading...rvices information...</div>;
 	}
 	
 	// Get services3 data with fallback to default values if not provided

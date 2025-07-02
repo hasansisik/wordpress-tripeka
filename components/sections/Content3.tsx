@@ -33,7 +33,7 @@ export default function Content3({ previewData }: Content3Props = {}) {
   }, [previewData, other]);
 
   if (!data || loading) {
-    return <section>Content 3 Yükleniyor...</section>;
+    return <section>Content 3 Loading...</section>;
   }
 
   const sectionStyle = {

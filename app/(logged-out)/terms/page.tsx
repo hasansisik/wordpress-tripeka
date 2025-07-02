@@ -26,7 +26,7 @@ export default function TermsConditionsPage() {
   }, [dispatch]);
   
   if (isLoading || loading || !pages.terms) {
-    return <div className="flex items-center justify-center min-h-screen">Yükleniyor...</div>;
+    return <div className="flex items-center justify-center min-h-screen">Loading...</div>;
   }
   
   const { hero, content } = pages.terms;

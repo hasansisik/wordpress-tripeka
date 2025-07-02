@@ -79,7 +79,7 @@ export default function BlogPost({ style, showItem, showPagination }: BlogPostPr
     const getPaginationGroup: number[] = pagination.slice(start, end)
 
     if (loading) {
-        return <div>Yükleniyor...ogs...</div>
+        return <div>Loading...ogs...</div>
     }
 
     return (

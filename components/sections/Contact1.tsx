@@ -565,7 +565,7 @@ export default function Contact1({ previewData }: Contact1Props = {}) {
 												>
 													<span>
 														{isUploadingImages 
-															? 'Görseller Yükleniyor...'
+															? 'Görseller Loading...'
 															: isSubmitting 
 																? (data.buttonSubmittingText || 'Sending...') 
 																: isSubmitted 
